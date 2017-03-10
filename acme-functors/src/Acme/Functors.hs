@@ -1,8 +1,8 @@
-{- | Types are great. Lifting them into some sort of applicative functor makes
-them even better. This module is an homage to our favorite applicatives. -}
+-- | Types are great. Lifting them into some sort of applicative functor makes
+-- them even better. This module is an homage to our favorite applicatives.
 
 {-# LANGUAGE NoImplicitPrelude #-} -- Prelude is bad
-{-# LANGUAGE DeriveFunctor     #-} -- Deriving Functor is boring
+{-# LANGUAGE DeriveFunctor     #-} -- Writing Functor instances is boring
 
 module Acme.Functors
     (
@@ -32,9 +32,6 @@ module Acme.Functors
 
     -- * Determined-by-parameter
     , DeterminedBy (..)
-
-    -- * Determined-by-mutable-parameter
-    , DeterminedByMutable (..)
 
     ) where
 
@@ -73,17 +70,17 @@ data AnyNumberOf a =
 
     | ActuallyNone -- ^ Oh. Well this is less fun.
 
-{- | __@OneOrMore@__ is more restrictive than AnyNumberOf, yet somehow actually
-/more/ interesting, because it excludes that dull situation where there aren't
-any values at all. -}
+-- | __@OneOrMore@__ is more restrictive than AnyNumberOf, yet somehow actually
+-- /more/ interesting, because it excludes that dull situation where there
+-- aren't any values at all.
 
 data OneOrMore a = OneOrMore
     { theFirstOfMany :: a -- ^ Definitely at least this one.
     , possiblyMore :: AnyNumberOf a -- ^ And perhaps others.
     }
 
-{- | __@Also extraThing@__ is a functor in which each value has an @extraThing@
-of some other type that tags along with it. -}
+-- | __@Also extraThing@__ is a functor in which each value has an @extraThing@
+-- of some other type that tags along with it.
 
 data (Also extraThing) a = Also
     { theExtraThing     :: extraThing -- ^ An additional thing that tags along.
@@ -146,7 +143,12 @@ instance Monad (OrInsteadFirst otherThing) where
     InsteadFirst other >>= _ = InsteadFirst other
     NotInsteadFirst a  >>= f = f a
 
--- | todo
+-- | __@DeterminedBy parameter@__ is a value that... well, we're not really sure
+-- what it is. We'll find out once a @parameter@ is provided.
+--
+-- The mechanism for deciding /how/ the value is determined from the
+-- @parameter@ is opaque; all you can do is test it with different parameters
+-- and see what results. There isn't even an @Eq@ instance, which is annoying.
 data DeterminedBy parameter a = Function ((->) parameter a)
     deriving Functor
 
@@ -160,12 +162,29 @@ instance Monad (DeterminedBy parameter) where
 
     Function fa >>= ff = Function (\x -> let Function f = ff (fa x) in f x)
 
--- | todo
-data DeterminedByMutable parameter a =
-    DeterminedByMutable (parameter -> (Also parameter) a)
-    deriving Functor
+{-
 
--- todo - unit?
+--------------------------------------------------------------------------------
+--  Notes
+--------------------------------------------------------------------------------
 
--- | __@Just otherThing@__ - todo
-data Just otherThing a = Just otherThing
+LiftedButWhy is Identity.
+
+OrNot is Maybe.
+
+Two doesn't have an analogue in the standard library as far as I know.
+
+AnyNumberOf is [], the standard cons list.
+
+OneOrMore is NonEmpty.
+
+Also is (,), the 2-tuple.
+
+OrInstead is AccValidation from the 'validation' package.
+
+OrInsteadFirst is Either.
+
+DeterminedBy is (->) also known as a function, whose functor is also known as
+Reader.
+
+-}
