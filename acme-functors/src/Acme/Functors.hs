@@ -67,6 +67,7 @@ instance Applicative LiftedButWhy where
     LiftedButWhy f <*> LiftedButWhy a = LiftedButWhy (f a)
 
 -- | > LiftedButWhy a >>= f = f a
+
 instance Monad LiftedButWhy where
 
     LiftedButWhy a >>= f = f a
@@ -182,7 +183,7 @@ instance Monoid a => Monoid (Two a) where
 --------------------------------------------------------------------------------
 
 -- | __@AnyNumberOf@__ starts to get exciting. Any number of values you want.
--- Zero... one ... two ... three ... four ... five ... The possibilities are
+-- Zero ... one ... two ... three ... four ... five ... The possibilities are
 -- /truly/ endless.
 
 data AnyNumberOf a =
@@ -251,9 +252,9 @@ instance Monoid a => Monoid (AnyNumberOf a) where
 --  One-or-more
 --------------------------------------------------------------------------------
 
--- | __@OneOrMore@__ is more restrictive than AnyNumberOf, yet somehow actually
--- /more/ interesting, because it excludes that dull situation where there
--- aren't any values at all.
+-- | __@OneOrMore@__ is more restrictive than @AnyNumberOf@, yet somehow
+-- actually /more/ interesting, because it excludes that dull situation where
+-- there aren't any values at all.
 
 data OneOrMore a = OneOrMore
     { theFirstOfMany :: a -- ^ Definitely at least this one.
@@ -345,7 +346,7 @@ instance (Monoid extraThing, Monoid a) => Monoid ((Also extraThing) a)
 -- expression evaluates to the combination of the @otherThing@s.
 
 data (OrInstead otherThing) a =
-      NotInstead a       -- ^ Some normal value.
+      NotInstead a       -- ^ A normal value.
     | Instead otherThing -- ^ Some totally unrelated other thing.
     deriving (Eq, Functor, Show)
 
@@ -403,10 +404,10 @@ instance (Semigroup otherThing, Monoid a) => Monoid ((OrInstead otherThing) a)
 -- When you combine stuff with @(\<*\>)@ or @(\<\>)@, all of the values need to
 -- be present. If any of them are the @otherThing@ instead, then the whole
 -- expression evaluates to the /first/ @otherThing@ encountered, ignoring any
--- additional @otherThings@ that may subsequently pop up
+-- additional @otherThing@s that may subsequently pop up.
 
 data (OrInsteadFirst otherThing) a =
-      NotInsteadFirst a       -- ^ Some normal value.
+      NotInsteadFirst a       -- ^ A normal value.
     | InsteadFirst otherThing -- ^ Some totally unrelated other thing.
     deriving (Eq, Functor, Show)
 
@@ -467,7 +468,7 @@ instance (Semigroup otherThing, Monoid a) =>
 -- annoying.
 
 data DeterminedBy parameter a = Determination ((->) parameter a)
-    deriving (Functor)
+    deriving Functor
 
 -- |
 -- > pure a = Determination (\_ -> a)
@@ -510,21 +511,21 @@ instance Monoid a => Monoid ((DeterminedBy parameter) a) where
 
 LiftedButWhy is Identity.
 
-OrNot is Maybe, but with a different semigroup and monoid.
+OrNot is Maybe, but with the monoid that is appropriate for its applicative.
 
-Two doesn't have an analogue in the standard library as far as I know.
+Two doesn't have an analogue in any standard library as far as I know.
 
-AnyNumberOf is ZipList.
+AnyNumberOf is ZipList, with the appropriate monoid added.
 
-OneOrMore is NonEmpty.
+OneOrMore is like NonEmpty, but with instances that match ZipList.
 
-Also is (,), the 2-tuple.
+Also is (,) — also known as the 2-tuple.
 
 OrInstead is AccValidation from the 'validation' package.
 
 OrInsteadFirst is Either.
 
-DeterminedBy is (->) also known as a function, whose functor is also known as
+DeterminedBy is (->), also known as a function, whose monad is also known as
 Reader.
 
 -}
