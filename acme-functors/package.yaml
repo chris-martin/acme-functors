@@ -16,11 +16,3 @@ library:
   exposed-modules:
     - Acme.Functors
     - Acme.Functors.Classes
-
-tests:
-  test:
-    source-dirs: test
-    main: Spec.hs
-    dependencies:
-      - base
-      - phantom-unit-math
