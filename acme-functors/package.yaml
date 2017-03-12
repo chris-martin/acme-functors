@@ -15,6 +15,7 @@ library:
   source-dirs: src
   exposed-modules:
     - Acme.Functors
+    - Acme.Functors.Classes
 
 tests:
   test:
