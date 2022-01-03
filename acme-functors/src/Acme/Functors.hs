@@ -215,7 +215,7 @@ infixr 5 ~~
 --
 -- >     ( (+ 1) ~~ (* 2) ~~ (+ 5) ~~       ActuallyNone )
 -- > <*> (    1  ~~    6  ~~    4  ~~ 37 ~~ ActuallyNone )
--- >  =  (    7  ~~   12  ~~    9  ~~       ActuallyNone )
+-- >  =  (    2  ~~   12  ~~    9  ~~       ActuallyNone )
 --
 -- This example demonstrates how when there are more arguments than functions,
 -- any excess arguments (in this case, the @37@) are ignored.
