@@ -25,6 +25,4 @@ library
   exposed-modules:
       Acme.Functors
       Acme.Functors.Classes
-  other-modules:
-      Paths_acme_functors
   default-language: Haskell2010
